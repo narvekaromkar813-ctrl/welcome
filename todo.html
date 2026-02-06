@@ -1,0 +1,199 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action ="" class = "todo fun">
+        <input type ="text"id ="title" value="">
+        <input type="text"id ="description" value="">
+        <input type="date" id ="due-date" value="">
+        <button id="submit-btn" type="sumbit">submit</button>
+    </form>
+    <script>
+        let tilte = document.querySelector('#title')
+        let desc = document.querySelector('#description')
+        let dueDate = document.querySelector('#due-date')
+        let submitBtn = document.querySelector('#submit-btn')
+
+        submitBtn.addEventListener('click',(e)=>{
+            e.preventDefault()
+            console.log(title.value,desc.value,dueDate.value,);
+        })
+    </script>
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Future Canvas 2026</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --grad1:#ff9ecf;
+  --grad2:#ff6fb5;
+  --text:#ffffff;
+}
+
+/* ===== Animated Background ===== */
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(45deg,var(--grad1),var(--grad2));
+  background-size:300% 300%;
+  animation:bgMove 10s infinite alternate;
+}
+
+@keyframes bgMove{
+  0%{background-position:left;}
+  100%{background-position:right;}
+}
+
+/* ===== Glass Canvas ===== */
+canvas{
+  backdrop-filter:blur(15px);
+  background:rgba(255,255,255,0.08);
+  border-radius:25px;
+  box-shadow:0 25px 60px rgba(0,0,0,0.3);
+}
+
+/* ===== Theme Button ===== */
+button{
+  position:absolute;
+  top:20px;
+  right:20px;
+  padding:10px 18px;
+  border:none;
+  border-radius:30px;
+  font-weight:500;
+  cursor:pointer;
+  background:white;
+}
+</style>
+</head>
+
+<body>
+
+<button onclick="changeTheme()">Switch Theme</button>
+<canvas id="canvas"></canvas>
+
+<script>
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+
+const DPR=window.devicePixelRatio||1;
+const W=620;
+const H=360;
+
+canvas.width=W*DPR;
+canvas.height=H*DPR;
+canvas.style.width=W+"px";
+canvas.style.height=H+"px";
+ctx.scale(DPR,DPR);
+
+/* ===== Floating Text ===== */
+let floatVal=0;
+
+/* ===== Mouse Glow ===== */
+let mouse={x:W/2,y:H/2};
+canvas.addEventListener("mousemove",(e)=>{
+ const rect=canvas.getBoundingClientRect();
+ mouse.x=e.clientX-rect.left;
+ mouse.y=e.clientY-rect.top;
+});
+
+/* ===== Particles ===== */
+const particles=Array.from({length:35},()=>({
+ x:Math.random()*W,
+ y:Math.random()*H,
+ r:Math.random()*5+2,
+ speed:Math.random()*0.8+0.2,
+}));
+
+/* ===== Theme System ===== */
+const themes=[
+  ["#ff9ecf","#ff6fb5"], // Pink
+  ["#00ffe0","#0066ff"], // Neon
+  ["#6dd5ed","#2193b0"]  // Ocean
+];
+
+let themeIndex=0;
+
+function changeTheme(){
+  themeIndex=(themeIndex+1)%themes.length;
+  document.body.style.setProperty("--grad1",themes[themeIndex][0]);
+  document.body.style.setProperty("--grad2",themes[themeIndex][1]);
+}
+
+/* ===== Draw Glow ===== */
+function drawMouseGlow(){
+ const g=ctx.createRadialGradient(mouse.x,mouse.y,0,mouse.x,mouse.y,120);
+ g.addColorStop(0,"rgba(255,255,255,0.25)");
+ g.addColorStop(1,"transparent");
+
+ ctx.fillStyle=g;
+ ctx.fillRect(0,0,W,H);
+}
+
+/* ===== Particles ===== */
+function drawParticles(){
+ particles.forEach(p=>{
+  ctx.beginPath();
+  ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+  ctx.fillStyle="rgba(255,255,255,0.5)";
+  ctx.fill();
+
+  p.y-=p.speed;
+  if(p.y<-10){
+    p.y=H+10;
+    p.x=Math.random()*W;
+  }
+ });
+}
+
+/* ===== Text ===== */
+function drawText(){
+ const y=180+Math.sin(floatVal)*12;
+
+ ctx.textAlign="center";
+ ctx.shadowBlur=25;
+ ctx.shadowColor="rgba(255,255,255,0.6)";
+
+ ctx.font="700 38px Playfair Display";
+ ctx.fillStyle="white";
+ ctx.fillText("Welcome To 2026 ✨",W/2,y);
+
+ ctx.shadowBlur=0;
+ ctx.font="300 18px Poppins";
+ ctx.fillText("The future feels brighter.",W/2,y+45);
+}
+
+/* ===== Animation Loop ===== */
+function animate(){
+ ctx.clearRect(0,0,W,H);
+
+ drawMouseGlow();
+ drawParticles();
+ drawText();
+
+ floatVal+=0.04;
+ requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+
+</body>
+</html>
